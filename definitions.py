@@ -2,7 +2,6 @@ DATASET_PATHS = {
     'movie_meta': './data/movie.metadata.tsv',
     'char_meta': './data/character.metadata.tsv',
     'plot_sum': './data/plot_summaries.txt',
-    'bechdel': './data/Bechdel.csv',
     'film_tropes' : './data/film_tropes.csv',
     'female_tvtropes' : './data/female_tvtropes.csv',
     'male_tvtropes' : './data/male_tvtropes.csv',
