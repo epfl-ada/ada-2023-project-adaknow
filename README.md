@@ -13,7 +13,19 @@
 2. Question 2
 3. ...
 
-## Proposed Additional Datasets
+## Datasets
+
+All datasets need to be included in the directory `data/`
+
+### Baseline Datasets
+
+- `movie.metadata.tsv`:
+- `character.metadata.tsv`:
+- `plot_summaries.txt`:
+- `name.clusters`:
+- `tvtropes.clusters`:
+
+### Additional Datasets
 
 [Detail any additional datasets used, their size, format, and relevance to the primary data.]
 
