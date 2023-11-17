@@ -132,17 +132,20 @@ The following tasks are to be undertaken sequentially over the course of the pro
   - The evolution of M/F ratio in genres over time
   - The evolution of the number of movies per actor/actress over career lifespan
 
-- Aristotelis Dimitriou:
-  - Missing value analysis of given dataframes
-  - Gender distribution across genres and time
-  - Role assessment of characters based on plot summaries
-  - Genre reduction
-- Juliette Dutheil:
-
-- Maria Eleni Peponi:
-  - Trope processing, scoring and model uncertainty and performance assessment
-  - Female and male count time evolution per genre and confidence interval analysis
+- Aristotelis Dimitriou: 
+    - Missing value analysis of given dataframes
+    - Gender distribution across genres and time
+    - Role assessment of characters based on plot summaries
+    - Genre reduction 
+- Juliette Dutheil: 
+    - Naive analysis of gender repartition: Gender Repartition over actor set, over the movies by countries, over the number of actors per movie
+    - Distribution of actor age per genre at movie release
+- Maria Eleni Peponi: 
+    - Trope processing, scoring and model uncertainty and performance assessment
+    - Female and male count time evolution per genre and confidence interval analysis
 - Stavros Papaiakovou:
+    - Naive analysis of gender repartition: Distribution of gender repartition over the age of the actors, movie runtime, year of movie release, month of movie release.
+    - Pearson and spearman correlations of aforementioned analysis and linear regression of the evolution of number of actor per gender over the years (with log transformation)
 
 ## Questions for TAs (Optional)
 
