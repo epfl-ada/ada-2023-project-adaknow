@@ -12,6 +12,7 @@ nltk.download('stopwords')
 nltk.download('punkt')
 nltk.download('wordnet')
 from re import sub
+from sklearn.metrics import precision_recall_fscore_support
 
 def parse_encoded_col(encoded_str):
     try:
@@ -200,3 +201,104 @@ def count_q(df, base_list):
             if i == j :
                 count_q += 1
     return count_q
+
+def process_group(group):
+    '''
+    Function to process a group of tropes. It will check for duplicate tropes and movie titles and combine the examples if they are different.
+    '''
+    processed_group = []
+
+    for i in range(len(group) - 1):
+        row = group.iloc[i]
+        next_row = group.iloc[i + 1]
+
+        if row['Movie Title'] == next_row['Movie Title']:
+            # Merge 'Processed Examples' if they are different
+            if row['Processed Examples'] != next_row['Processed Examples']:
+                row['Processed Examples'] = list(set(row['Processed Examples'] + next_row['Processed Examples']))
+            # Skip adding next_row as it's a duplicate
+            continue
+
+        processed_group.append(row)
+
+    # Add the last row of the group if it's unique
+    last_row = group.iloc[-1]
+    if not processed_group or processed_group[-1]['Movie Title'] != last_row['Movie Title']:
+        processed_group.append(last_row)
+
+    return pd.DataFrame(processed_group)
+
+
+def calculate_metrics(df, threshold_male, threshold_female, female_scores, male_scores, unisex_scores):
+
+    female_scores['Expectation'] = 1
+    male_scores['Expectation'] = -1
+    unisex_scores['Expectation'] = 2
+    total_scores = pd.concat([female_scores, male_scores, unisex_scores])
+
+
+    # Classify based on thresholds
+    df['Classification'] = np.select(
+        [df['Genderedness'] >= threshold_female, df['Genderedness'] <= threshold_male],
+        [1, -1], default=2
+    )
+    
+    pred_expect_merge = pd.merge(df, total_scores, how='left', on='Trope').dropna(subset=['Expectation'])
+
+    # Calculate precision, recall, and F1 score for each class
+    precision, recall, f1_score, support = precision_recall_fscore_support(
+        pred_expect_merge['Expectation'], pred_expect_merge['Classification'], average=None, labels=[-1, 1, 2]
+    )
+
+    overall_precision, overall_recall, overall_f1, overall_support = precision_recall_fscore_support(
+        pred_expect_merge['Expectation'], pred_expect_merge['Classification'], average='macro'
+    )
+
+    results = {
+        'precision_male': precision[0], 
+        'precision_female': precision[1], 
+        'precision_unisex': precision[2], 
+        'recall_male': recall[0], 
+        'recall_female': recall[1], 
+        'recall_unisex': recall[2], 
+        'f1_score_male': f1_score[0], 
+        'f1_score_female': f1_score[1], 
+        'f1_score_unisex': f1_score[2], 
+        'overall_precision': overall_precision, 
+        'overall_recall': overall_recall,
+        'overall_f1' : overall_f1
+    }
+    
+    return results
+
+def search_optimal_thresholds(tropes_wscores, female_scores, male_scores, unisex_scores):
+    best_f1 = 0
+    best_thresholds = (0, 0)
+    results = []
+
+    genderedness_range_male = np.linspace(tropes_wscores['Genderedness'].min(), 0, num=25)
+    genderedness_range_female = np.linspace(0, tropes_wscores['Genderedness'].max(), num=25)
+
+    for threshold_male, threshold_female in zip(genderedness_range_male, genderedness_range_female):
+            if threshold_female <= threshold_male:
+                continue  # Ensure non-overlapping
+            performance_results = calculate_metrics(
+                tropes_wscores, threshold_male, threshold_female, 
+                female_scores, male_scores, unisex_scores)
+
+            if performance_results['overall_f1'] > best_f1:
+                best_f1 = performance_results['overall_f1']
+                best_thresholds = (threshold_male, threshold_female)
+            results.append({
+                'Male Threshold': threshold_male,
+                'Female Threshold': threshold_female,
+                'Female Precision': performance_results['precision_female'],
+                'Male Precision': performance_results['precision_male'],
+                'Unisex Precision': performance_results['precision_unisex'],
+                'Overall Precision': performance_results['overall_precision'],
+                'Overall Recall': performance_results['overall_recall'],
+                'Average F1 Score': performance_results['overall_f1']
+            })
+
+    results_df = pd.DataFrame(results)
+    return best_thresholds, best_f1, results_df
