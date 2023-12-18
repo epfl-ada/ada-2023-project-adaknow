@@ -7,12 +7,26 @@ import nltk
 from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
 from nltk.corpus import stopwords
+from nltk import download
 from nltk import pos_tag
 nltk.download('stopwords')
 nltk.download('punkt')
 nltk.download('wordnet')
 from re import sub
 from sklearn.metrics import precision_recall_fscore_support
+
+# Trope analysis
+import seaborn as sns
+import plotly.express as px
+from gensim.models import LdaMulticore, TfidfModel
+from gensim.corpora import Dictionary
+from gensim.models.phrases import Phrases, Phraser
+from wordcloud import WordCloud
+import gensim.downloader as api
+from scipy.spatial.distance import pdist
+import plotly.io as pio
+pio.renderers.default = 'notebook'  # or 'notebook_connected' for online mode
+
 
 def parse_encoded_col(encoded_str):
     try:
@@ -230,6 +244,9 @@ def process_group(group):
 
 
 def calculate_metrics(df, threshold_male, threshold_female, female_scores, male_scores, unisex_scores):
+    '''
+    Function that calculates precision, recall, and f1 score based on given threshold  
+    '''
 
     female_scores['Expectation'] = 1
     male_scores['Expectation'] = -1
@@ -237,19 +254,21 @@ def calculate_metrics(df, threshold_male, threshold_female, female_scores, male_
     total_scores = pd.concat([female_scores, male_scores, unisex_scores])
 
 
-    # Classify based on thresholds
+    # Classify as male, female or unisex based on thresholds
     df['Classification'] = np.select(
         [df['Genderedness'] >= threshold_female, df['Genderedness'] <= threshold_male],
         [1, -1], default=2
     )
     
+    # Merge with df
     pred_expect_merge = pd.merge(df, total_scores, how='left', on='Trope').dropna(subset=['Expectation'])
 
-    # Calculate precision, recall, and F1 score for each class
+    # Calculate precision, recall, and F1 score for each class from built in sklearn
     precision, recall, f1_score, support = precision_recall_fscore_support(
         pred_expect_merge['Expectation'], pred_expect_merge['Classification'], average=None, labels=[-1, 1, 2]
     )
 
+    # Calculate overall precision, recall and f1 score
     overall_precision, overall_recall, overall_f1, overall_support = precision_recall_fscore_support(
         pred_expect_merge['Expectation'], pred_expect_merge['Classification'], average='macro'
     )
@@ -272,6 +291,9 @@ def calculate_metrics(df, threshold_male, threshold_female, female_scores, male_
     return results
 
 def search_optimal_thresholds(tropes_wscores, female_scores, male_scores, unisex_scores):
+    '''
+    Function that computes optimal threshold for trope gender classification based on maximising overall f1 score
+    '''
     best_f1 = 0
     best_thresholds = (0, 0)
     results = []
@@ -281,7 +303,7 @@ def search_optimal_thresholds(tropes_wscores, female_scores, male_scores, unisex
 
     for threshold_male, threshold_female in zip(genderedness_range_male, genderedness_range_female):
             if threshold_female <= threshold_male:
-                continue  # Ensure non-overlapping
+                continue  # Ensure intervals won't overlap
             performance_results = calculate_metrics(
                 tropes_wscores, threshold_male, threshold_female, 
                 female_scores, male_scores, unisex_scores)
@@ -302,3 +324,131 @@ def search_optimal_thresholds(tropes_wscores, female_scores, male_scores, unisex
 
     results_df = pd.DataFrame(results)
     return best_thresholds, best_f1, results_df
+
+def lda_analysis(df, gender = 'Female', no_below = 50, no_above = 0.3, no_topics = 5):
+    '''
+    Function with LDA pipeline for tropes
+    '''
+    if gender == 'Female':
+        df_lda = df[df['Gender Classification'] == 1]
+    elif gender == 'Male':
+        df_lda = df[df['Gender Classification'] == -1]
+    else:
+        df_lda = df[df['Gender Classification'] == 2]
+
+    # NLTK stopwords
+    download('stopwords')
+
+    # No need to split into words as it's already a list of strings
+    texts = df_lda['Processed Examples']
+
+    # Remove stopwords
+    stop_words = set(stopwords.words('english'))
+    texts = [[word for word in doc if word not in stop_words] for doc in texts]
+
+    # Handle Bigrams
+    bigram = Phrases(texts, min_count=5)
+    bigram_mod = Phraser(bigram)
+    texts = [bigram_mod[doc] for doc in texts]
+
+    # Create Dictionary and Corpus
+    dictionary = Dictionary(texts)
+    
+    # Filter for extremes
+    dictionary.filter_extremes(no_below=no_below, no_above=no_above)
+
+    corpus = [dictionary.doc2bow(text) for text in texts]
+
+    # Use TF-IDF to filter for frequent words
+    tfidf = TfidfModel(corpus)  
+    corpus_tfidf = tfidf[corpus]  
+
+    # Apply LDA model
+    lda_model = LdaMulticore(corpus=corpus_tfidf,
+                            id2word=dictionary,
+                            num_topics=no_topics, 
+                            random_state=100,
+                            chunksize=100,
+                            passes=20,
+                            per_word_topics=True)
+    
+    # Return topic distribution per document (documents  = tropes here)
+    doc_topic_dist = [lda_model.get_document_topics(doc) for doc in corpus]
+
+    return lda_model, doc_topic_dist, corpus_tfidf, dictionary
+
+def lol_to_df(topic_dist):
+    '''Takes a list of lists and creates a df'''
+
+    what = {'Topics and distributions' : []}
+    for j in topic_dist:
+        what['Topics and distributions'].append(j)
+
+    # df with list of tuples in cells
+    df = pd.DataFrame(what, index = None)
+
+    # Split the topic, probability tuples
+    first_elements = [ [tup[0] for tup in lst] for lst in df['Topics and distributions'] ]
+    second_elements = [ [tup[1] for tup in lst] for lst in df['Topics and distributions'] ]
+
+    # Create new DataFrame
+    new_df = pd.DataFrame({'Topics': first_elements, 'Probabilities': second_elements})
+
+    return new_df
+
+def no_to_names(a_list, gender = 'Female'):
+    '''
+    Function to assign meaningful names to our LDA topics
+    '''
+    if gender == 'Female':
+        new_list = ['Appearance and Styling' if item == 0 else 'Family' for item in a_list]
+    elif gender == 'Male':
+        # new_list = ['Marvel superheros' if item == 0 else 'Heroic Sagas and Epic Journeys' if item == 1
+        #             else 'Action and Miscellaneous' for item in a_list]
+        new_list = ['Action and Adventure' if item == 0 else 'General/Miscellaneous' for item in a_list]    
+    else:
+        new_list = ['Sci-fi and Fantasy' if item == 0 else 'Human Relationships' for item in a_list]       
+
+    return new_list
+
+def boxplot_topic_prob(df, gender = 'Female'):
+    '''
+    Function to create a boxplot for the distribution of topics across each trope class df
+    '''
+
+    # df = df[df['Topics'] != '?']
+    # df = df[df['Probabilities'] != '?']
+    df = df.dropna(subset = ['Topics', 'Probabilities'])
+    df_exploded = df.explode(['Topics', 'Probabilities'])
+
+    fig = px.box(df_exploded, x='Topics', y='Probabilities', color='Topics',
+                title=f"Distribution of Topic Probabilities Across {gender} Gendered Tropes",
+                labels={"Topics": "Topics", "Probabilities": "Probability"})
+
+    fig.update_layout(showlegend=False)
+
+    fig.update_traces(marker=dict(size=3, opacity=0.6), line=dict(width=1.5))
+    fig.update_layout(
+        plot_bgcolor='white', 
+        title_font_size=18, 
+        font_size=14, 
+        title_x=0.5, 
+        title_y=0.95
+    )
+
+    fig.show()
+
+def pascal_case(str):
+    """
+    Function to convert sequence of strings to PascalCase.
+    """
+    
+    return str.lower().replace("_", " ").title().replace(" ", "")
+
+def list_to_str(lst):
+    """
+    Function that turns list into a string
+    """
+    if isinstance(lst, list): 
+        return "[" + ", ".join(f"'{item}'" for item in lst) + "]"
+    return lst 
