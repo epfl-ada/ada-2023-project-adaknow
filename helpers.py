@@ -452,3 +452,28 @@ def list_to_str(lst):
     if isinstance(lst, list): 
         return "[" + ", ".join(f"'{item}'" for item in lst) + "]"
     return lst 
+
+
+#Bootstrapping function 
+def bootstrap_confidence_interval(data, iterations=1000):
+    """
+    Bootstrap the 95% confidence interval for the mean of the data.
+    
+    Parameters:
+    - data: An array of data
+    - iterations: The number of bootstrap samples to generate
+    
+    Returns:
+    - A tuple representing the lower and upper bounds of the 95% confidence interval
+    """
+    means = np.zeros(iterations)
+    
+    for i in range(iterations):
+        bootstrap_sample = np.random.choice(data, size=len(data), replace=True)
+        means[i] = np.mean(bootstrap_sample)
+        
+    lower_bound = np.percentile(means, 2.5)
+    upper_bound = np.percentile(means, 97.5)
+    mean_means = np.mean(means)
+    
+    return (lower_bound, upper_bound, mean_means)
