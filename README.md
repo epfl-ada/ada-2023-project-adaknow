@@ -69,7 +69,7 @@ or (for Windows): use this [link](https://drive.google.com/uc?export=download&id
         - Distribution of actor age per genre at movie release
     - Milestone 3
         - Jekyll website set up and hosting using Github Pages
-        - Front end development and design of the visual aspect
+        - Front end development and work on the structure for the visual aspects  
         - Partipation to the causal analysis with Stavros
 
 - Maria Eleni Peponi:
