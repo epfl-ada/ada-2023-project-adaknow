@@ -524,3 +524,61 @@ def bootstrap_confidence_interval(data, iterations=1000):
 def get_similarity(propensity_score1, propensity_score2):
     '''Calculate similarity for instances with given propensity scores'''
     return 1-np.abs(propensity_score1-propensity_score2)
+
+def calculate_percentage(count_dict):
+    total = sum(count_dict.values())
+    return {key: np.round((value / total) * 100, 2) for key, value in count_dict.items()}
+
+def top_three_elements(count_dict, threshold=0.15):
+    """
+    Function to find the top three elements in a dictionary where each element has a presence 
+    of at least {threshold}. If fewer than three elements meet this criterion, fill with NaN.
+    """
+    # Sorting the dictionary by values in descending order and filtering out elements < 15%
+    filtered_items = {k: v for k, v in sorted(count_dict.items(), key=lambda item: item[1], reverse=True) if v >= threshold}
+    
+    # Getting the top three items
+    top_items = list(filtered_items.keys())[:3]
+    
+    # Padding with NaN if fewer than three items are present
+    while len(top_items) < 3:
+        top_items.append(np.nan)
+    
+    return top_items
+
+def none_to_nan(data):
+    if data is None:
+        return np.nan
+    else:
+        return data
+    
+# select only the year of birth if it exists
+def extract_year(date_string):
+    if date_string is np.nan:
+        return np.nan
+    else:
+        return int(date_string.split('-')[0])
+
+def clean_surrogate_characters(df):
+    """
+    Function to clean surrogate characters from a DataFrame.
+    It iterates over each column and each string, replacing surrogate characters.
+    """
+    for col in df.columns:
+        if df[col].dtype == "object":
+            df[col] = df[col].apply(lambda x: x.encode('utf-16', 'surrogatepass').decode('utf-16') if isinstance(x, str) else x)
+    return df
+
+# Function to prepare data for boxplot with top 10 categories
+def prepare_boxplot_data(df, category_columns, value_column, num_categories=10):
+    # Aggregating the data for top 10 categories in each column
+    top_categories = {col: df[col].value_counts().head(num_categories).index for col in category_columns}
+    data_list = []
+
+    # Filtering and melting data for each category
+    for col in category_columns:
+        filtered_data = df[df[col].isin(top_categories[col])]
+        melted_data = pd.melt(filtered_data, id_vars=[value_column], value_vars=[col], var_name='Category', value_name='Value')
+        data_list.append(melted_data)
+
+    return pd.concat(data_list)
