@@ -50,7 +50,8 @@ or (for Windows): use this [link](https://drive.google.com/uc?export=download&id
         - Survival analysis
         - Data pre-processing for trope analysis
         - Prediction of gender with Neural Networks
-        - Website authoring
+        - Website authoring and design
+        
 
 - Aristotelis Dimitriou:
     - Milestone 2:
@@ -61,14 +62,14 @@ or (for Windows): use this [link](https://drive.google.com/uc?export=download&id
     - Milestone 3:
         - Survival Analysis
         - Prediction of gender with Neural Networks
-        - Authoring website content
+        - Authoring website content and design
 
 - Juliette Dutheil:
     - Milestone 2:
         - Gender Repartition over actor set, countries, and number of actors per movie
         - Distribution of actor age per genre at movie release
     - Milestone 3
-        - Jekyll website set up and hosting using Github Pages
+        - Beautiful Jekyll website set up and hosting using Github Pages
 
 - Maria Eleni Peponi:
     - Milestone 2:
@@ -81,6 +82,7 @@ or (for Windows): use this [link](https://drive.google.com/uc?export=download&id
         - Statistical analysis of gendered tropes
         - Tropes write up for the website
         - README write up
+        - Merging of all notebooks into final deliverable notebook
 
 - Stavros Papaiakovou:
     - Milestone 2:
