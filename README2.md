@@ -1,4 +1,4 @@
-# Project Title: Gender Roles in Cinema: An Ongoing Evolution
+# Gender Roles in Cinema: An Ongoing Evolution
 
 ## Abstract
 
