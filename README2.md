@@ -111,7 +111,7 @@ The following preprocessing steps were performed on the datasets:
 - Survival Analysis and Gender Prediction:
 
 - Causal Analysis:
-    - Naive analysis of different movie characteristics in order to found possible confounders of the movie ratings to then be able to isolate the desired one (female fraction of actors).
+    - Naive analysis of different movie characteristics in order to find possible confounders of the movie ratings to then be able to isolate the desired one (female fraction of actors).
     - Propensity score matching was used to create a balanced dataframe between the treatment and control group. The treatment group were movies with more female actors than male actors, whereas the control group was the opposite. 
     - Analysis performed on the balanced dataframe to show the real relationship between female fraction of actors and the ratings.
 
@@ -137,7 +137,7 @@ The following preprocessing steps were performed on the datasets:
         - Gender Repartition over actor set, countries, and number of actors per movie
         - Distribution of actor age per genre at movie release
     - Milestone 3
-        - Set up of website 
+        - Jekyll website set up and hosting using Github Pages
 
 - Maria Eleni Peponi:
     - Milestone 2:
