@@ -15,7 +15,7 @@ cd data
 curl -c ./cookie -s -L "https://drive.google.com/uc?export=download&id=${fileId}" > /dev/null
 curl -Lb ./cookie "https://drive.google.com/uc?export=download&confirm=$(awk '/download/ {print $NF}' ./cookie)&id=${fileId}" -o ${fileName}
 
-# Unzip the contents of the downloaded file
+# Unzip the contents of the downloaded file and make sure things are not kept inside folder
 unzip -o -j ${fileName}
 
 

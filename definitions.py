@@ -45,6 +45,8 @@ COL_NAMES = {
     ],
 }
 
+# new genres
+
 GENRE_REDUCTION_MAP = {
     "Softcore Porn": ["Adult"],
     "Prison film": ["Prison"],

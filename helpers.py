@@ -474,7 +474,7 @@ def list_to_str(lst):
 
 def create_word_cloud(lda_model, topic_idx = 1, num_words=30, gender = 'Unisex', topic_name = 'Family'):
     '''
-    Function to make word cloud for a specific topic
+    Function to make word cloud for a specific topic of an LDA
     '''
     plt.figure(figsize=(8,8))
     
