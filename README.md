@@ -147,6 +147,8 @@ The following tasks are to be undertaken sequentially over the course of the pro
 - Maria Eleni Peponi:
   - Trope processing, scoring and model uncertainty and performance assessment
   - Female and male count time evolution per genre and confidence interval analysis
+  - Trope analysis
+  - Authorng website content
 - Stavros Papaiakovou:
   - Naive analysis of gender repartition: Distribution of gender repartition over the age of the actors, movie runtime, year of movie release, month of movie release.
   - Pearson and spearman correlations of aforementioned analysis and linear regression of the evolution of number of actor per gender over the years (with log transformation)
