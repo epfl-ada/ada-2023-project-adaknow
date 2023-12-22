@@ -104,6 +104,7 @@ The following preprocessing steps were performed on the datasets:
   - This was done following a naive approach, looking wether the name or surname of a character is present in the plot summary of the movie in the `plot_summaries.txt` file. If the name or surname of the character is present in the plot summary, then the character is considered a Main Character, otherwise it is considered a Supporting Character.
 
 ## Further analysis
+An question we asked ourselves when treating all this data was whether we could accurately guess the gender of actors using some carefully selected covariates. So we preprocessed the data in order to be left with the biggest subset of data without ill-presented data (missing values or irrelevant data).
 
 The following tasks remain to be completed:
 
