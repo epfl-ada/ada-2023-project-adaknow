@@ -12,7 +12,7 @@ The results of the analysis are promising and we are confident that the project 
 
 1. How are highly gendered tropes used in movies across different genres and decades?
 2. How does the nature of tropes correlate with their genderedness?
-3. What covariates affect the representation of males and females in movies across time?
+3. What covariates affect the representation of males and females in movies across time? And can we use those covariates to accurately infer the gender of actors?
 4. How much gender disparity is there in cinema across time and genres?
 
 ## Datasets
@@ -104,6 +104,7 @@ The following preprocessing steps were performed on the datasets:
   - This was done following a naive approach, looking wether the name or surname of a character is present in the plot summary of the movie in the `plot_summaries.txt` file. If the name or surname of the character is present in the plot summary, then the character is considered a Main Character, otherwise it is considered a Supporting Character.
 
 ## Further analysis
+An question we asked ourselves when treating all this data was whether we could accurately guess the gender of actors using some carefully selected covariates. So we preprocessed the data in order to be left with the biggest subset of data without ill-presented data (missing values or irrelevant data).
 
 The following tasks remain to be completed:
 
@@ -131,18 +132,24 @@ The following tasks are to be undertaken sequentially over the course of the pro
 - Alexandre Ben Ahmed Kontouli:
   - The evolution of M/F ratio in genres over time
   - The evolution of the number of movies per actor/actress over career lifespan
-
+  - Data pre-processing for trope analysis
+  - Prediction of gender with Neural Networks
+  - Website authoring
 - Aristotelis Dimitriou:
   - Missing value analysis of given dataframes
   - Gender distribution across genres and time
   - Role assessment of characters based on plot summaries
   - Genre reduction
+  - Prediction of gender with Neural Networks
+  - Authoring website content
 - Juliette Dutheil:
   - Naive analysis of gender repartition: Gender Repartition over actor set, over the movies by countries, over the number of actors per movie
   - Distribution of actor age per genre at movie release
 - Maria Eleni Peponi:
   - Trope processing, scoring and model uncertainty and performance assessment
   - Female and male count time evolution per genre and confidence interval analysis
+  - Trope analysis
+  - Authorng website content
 - Stavros Papaiakovou:
   - Naive analysis of gender repartition: Distribution of gender repartition over the age of the actors, movie runtime, year of movie release, month of movie release.
   - Pearson and spearman correlations of aforementioned analysis and linear regression of the evolution of number of actor per gender over the years (with log transformation)
