@@ -1,4 +1,5 @@
-# Gender Roles in Cinema: An Ongoing Evolution (https://juliette75700.github.io/Gender-Evolution/)
+# Gender Roles in Cinema: An Ongoing Evolution 
+> The website can be found <a href="https://juliette75700.github.io/Gender-Evolution/" target="_blank">here</a>
 
 ## Abstract
 
