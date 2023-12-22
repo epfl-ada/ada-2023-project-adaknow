@@ -12,7 +12,7 @@ The results of the analysis are promising and we are confident that the project 
 
 1. How are highly gendered tropes used in movies across different genres and decades?
 2. How does the nature of tropes correlate with their genderedness?
-3. What covariates affect the representation of males and females in movies across time?
+3. What covariates affect the representation of males and females in movies across time? And can we use those covariates to accurately infer the gender of actors?
 4. How much gender disparity is there in cinema across time and genres?
 
 ## Datasets
