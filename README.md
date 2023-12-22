@@ -39,6 +39,8 @@ or (for Windows): use this [link](https://drive.google.com/uc?export=download&id
 - `female_tvtropes.csv`: contains tropes characterised as 'Always Female' by the TVTropes community. This was used to assess the performance of the genderedness scoring method.
 - `male_tvtropes.csv`: as above.
 - `unisex_tvtropes.csv` as above.
+- `IMDB_movies.tsv`: contains the names and the ID's of the movies from IMBD in order to merge with the ratings
+- `IMDB_ratings.tsv`: contains the the ID's and the ratings of the movies from IMBD in order to contact the causal analysis
 
 ## Organization Within the Team
 
