@@ -5,8 +5,9 @@ DATASET_PATHS = {
     'film_tropes' : './data/film_tropes.csv',
     'female_tvtropes' : './data/female_tvtropes.csv',
     'male_tvtropes' : './data/male_tvtropes.csv',
-    'unisex_tvtropes' : './data/unisex_tvtropes.csv'
-
+    'unisex_tvtropes' : './data/unisex_tvtropes.csv',
+    'IMDB_ratings' : './data/IMDB_ratings.tsv',
+    'IMDB_movies' : './data/IMDB_movies.tsv'
 }
 
 COL_NAMES = {

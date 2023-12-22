@@ -14,6 +14,7 @@ nltk.download('punkt')
 nltk.download('wordnet')
 from re import sub
 from sklearn.metrics import precision_recall_fscore_support
+import networkx as nx
 
 # Trope analysis
 import seaborn as sns
@@ -29,9 +30,14 @@ pio.renderers.default = 'notebook'  # or 'notebook_connected' for online mode
 
 
 def parse_encoded_col(encoded_str):
+    if isinstance(encoded_str, list):
+        return encoded_str
+    
+    # Attempt to parse the string as a list
     try:
         return ast.literal_eval(encoded_str)
     except (ValueError, SyntaxError):
+        # Return an empty dictionary if parsing fails
         return {}
     
 def string_to_list(list_string):
@@ -411,32 +417,45 @@ def no_to_names(a_list, gender = 'Female'):
 
     return new_list
 
-def boxplot_topic_prob(df, gender = 'Female'):
+
+
+def boxplot_topic_prob(df, gender='Female', library='plotly'):
     '''
-    Function to create a boxplot for the distribution of topics across each trope class df
+    Function to create a boxplot for the distribution of topics across each trope class df.
+    Set library to 'seaborn' for a static plot or 'plotly' for an interactive plot.
     '''
 
-    # df = df[df['Topics'] != '?']
-    # df = df[df['Probabilities'] != '?']
-    df = df.dropna(subset = ['Topics', 'Probabilities'])
+    # Clean the data
+    df = df.dropna(subset=['Topics', 'Probabilities'])
     df_exploded = df.explode(['Topics', 'Probabilities'])
 
-    fig = px.box(df_exploded, x='Topics', y='Probabilities', color='Topics',
-                title=f"Distribution of Topic Probabilities Across {gender} Gendered Tropes",
-                labels={"Topics": "Topics", "Probabilities": "Probability"})
+    if library == 'plotly':
+        # Create the interactive figure with Plotly
+        fig = px.box(df_exploded, x='Topics', y='Probabilities', color='Topics',
+                     title=f"Distribution of Topic Probabilities Across {gender} Gendered Tropes",
+                     labels={"Topics": "Topics", "Probabilities": "Probability"})
+        fig.update_layout(showlegend=False)
+        fig.update_traces(marker=dict(size=3, opacity=0.6), line=dict(width=1.5))
+        fig.update_layout(
+            plot_bgcolor='white', 
+            title_font_size=18, 
+            font_size=14, 
+            title_x=0.5, 
+            title_y=0.95
+        )
+        fig.show()
 
-    fig.update_layout(showlegend=False)
+    elif library == 'seaborn':
+        # Create the static figure with Seaborn
+        plt.figure(figsize=(12, 6))
+        sns.boxplot(x='Topics', y='Probabilities', data=df_exploded)
+        plt.title(f"Distribution of Topic Probabilities Across {gender} Gendered Tropes")
+        plt.xticks(rotation=45) 
+        plt.show()
 
-    fig.update_traces(marker=dict(size=3, opacity=0.6), line=dict(width=1.5))
-    fig.update_layout(
-        plot_bgcolor='white', 
-        title_font_size=18, 
-        font_size=14, 
-        title_x=0.5, 
-        title_y=0.95
-    )
+    else:
+        raise ValueError("The 'library' parameter should be 'plotly' or 'seaborn'.")
 
-    fig.show()
 
 def pascal_case(str):
     """
@@ -452,6 +471,30 @@ def list_to_str(lst):
     if isinstance(lst, list): 
         return "[" + ", ".join(f"'{item}'" for item in lst) + "]"
     return lst 
+
+def create_word_cloud(lda_model, topic_idx = 1, num_words=30, gender = 'Unisex', topic_name = 'Family'):
+    '''
+    Function to make word cloud for a specific topic
+    '''
+    plt.figure(figsize=(8,8))
+    
+    # Extract words and their weights for the specified topic
+    topic_words = dict(lda_model.show_topic(topic_idx, num_words))
+
+    # Circle mask
+    x, y = np.ogrid[:300, :300]
+    mask = (x - 150) ** 2 + (y - 150) ** 2 > 130 ** 2
+    mask = 255 * mask.astype(int)
+    
+    # Create and generate a word cloud image
+    wordcloud = WordCloud(width=500, height=500, background_color='white', min_font_size=6, mask = mask, colormap = 'magma')
+    wordcloud.generate_from_frequencies(topic_words)
+    
+    # Display the generated word cloud
+    plt.imshow(wordcloud, interpolation="bilinear")
+    plt.axis('off')
+    plt.title(f'{gender} Tropes - Top 30 most frequent words in {topic_name}')
+    plt.show()
 
 
 #Bootstrapping function 
@@ -477,3 +520,7 @@ def bootstrap_confidence_interval(data, iterations=1000):
     mean_means = np.mean(means)
     
     return (lower_bound, upper_bound, mean_means)
+
+def get_similarity(propensity_score1, propensity_score2):
+    '''Calculate similarity for instances with given propensity scores'''
+    return 1-np.abs(propensity_score1-propensity_score2)

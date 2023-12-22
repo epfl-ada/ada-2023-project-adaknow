@@ -12,7 +12,7 @@ To this end we utilised a variety of datasets and methods. In particular, the sc
 
 Our analysis showed that while there is a statistically significant difference between the career longevity of female and male actors, this alone is not enough to predict their gender with high precision. Additionally, it was found that although tropes that are labelled as 'male' or 'female' do perpetuate gender stereotypes, their use in movies based on the naive scoring method used is not extensive enough to reach significant conclusions. Finally, it is revealed that female representation in movies does not affect their ratings.
 
-In conlcusion, although our analysis did not reach widespread and robust conclusions we hope that it sets a stepping stone for future works. In particular we believe that our tropes analysis can be expanded via the use of more robust models following a more refined classification such that specific tropes can be linked to specific characters. This could lead to the use of tropes to establish more granular correlations with actor career longevity and movie ratings.
+In conlusion, although our analysis did not reach widespread and robust conclusions we hope that it sets a stepping stone for future works. In particular, we believe that our tropes analysis can be expanded via the use of more robust models following a more refined classification such that specific tropes can be linked to specific characters. This could lead to the use of tropes to establish more granular correlations with actor career longevity and movie ratings.
 
 ## Datasets
 
