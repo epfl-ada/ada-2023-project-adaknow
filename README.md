@@ -50,7 +50,7 @@ or (for Windows): use this [link](https://drive.google.com/uc?export=download&id
         - Survival analysis
         - Data pre-processing for trope analysis
         - Prediction of gender with Neural Networks
-        - Website authoring
+        - Website authoring + website layout and design
 
 - Aristotelis Dimitriou:
     - Milestone 2:
@@ -61,7 +61,7 @@ or (for Windows): use this [link](https://drive.google.com/uc?export=download&id
     - Milestone 3:
         - Survival Analysis
         - Prediction of gender with Neural Networks
-        - Authoring website content
+        - Authoring website content + website layout and design
 
 - Juliette Dutheil:
     - Milestone 2:
