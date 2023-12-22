@@ -131,12 +131,16 @@ The following tasks are to be undertaken sequentially over the course of the pro
 - Alexandre Ben Ahmed Kontouli:
   - The evolution of M/F ratio in genres over time
   - The evolution of the number of movies per actor/actress over career lifespan
-
+  - Data pre-processing for trope analysis
+  - Prediction of gender with Neural Networks
+  - Website authoring
 - Aristotelis Dimitriou:
   - Missing value analysis of given dataframes
   - Gender distribution across genres and time
   - Role assessment of characters based on plot summaries
   - Genre reduction
+  - Prediction of gender with Neural Networks
+  - Authoring website content
 - Juliette Dutheil:
   - Naive analysis of gender repartition: Gender Repartition over actor set, over the movies by countries, over the number of actors per movie
   - Distribution of actor age per genre at movie release
