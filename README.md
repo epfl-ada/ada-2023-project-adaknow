@@ -62,7 +62,7 @@ or (for Windows): use this [link](https://drive.google.com/uc?export=download&id
         - Role assessment of characters based on plot summaries
         - Genre reduction
     - Milestone 3:
-        - Survival Analysis
+        - Exhaustive Survival Analysis (Genders, Genres, Countries, Languages)
         - Prediction of gender with Neural Networks
         - Website authoring + website layout and design
 
